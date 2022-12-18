@@ -36,9 +36,9 @@ const defaultValues = {
 };
 
 function RegisterPage() {
-  const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const auth = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
@@ -56,17 +56,19 @@ function RegisterPage() {
   } = methods;
 
   const onSubmit = async (data) => {
+    const from = location.state?.from?.pathname || "/"; //path location the user wants to naviage
     let { name, email, password } = data;
 
     try {
       await auth.register({ name, email, password }, () => {
-        navigate("/", { replace: true });
+        navigate(from, { replace: true });
       });
     } catch (error) {
       reset();
       setError("responseError", error);
     }
   };
+
   return (
     <Container maxWidth="xs">
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -76,11 +78,13 @@ function RegisterPage() {
           )}
           <Alert severity="info">
             Already have an account?{" "}
-            <Link variant="subtitle2" component={RouterLink} to="/">
+            <Link variant="subtitle2" component={RouterLink} to="/login">
               Sign in
             </Link>
           </Alert>
-          <FTextField name="name" label="Name" />
+
+          <FTextField name="name" label="Full name" />
+
           <FTextField name="email" label="Email address" />
 
           <FTextField
@@ -100,9 +104,10 @@ function RegisterPage() {
               ),
             }}
           />
+
           <FTextField
             name="passwordConfirmation"
-            label="Password Confirmation"
+            label="Confirm Password"
             type={showPasswordConfirmation ? "text" : "password"}
             InputProps={{
               endAdornment: (
@@ -123,6 +128,7 @@ function RegisterPage() {
               ),
             }}
           />
+
           <LoadingButton
             fullWidth
             size="large"
