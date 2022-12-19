@@ -1,7 +1,7 @@
-import CommentReducer from "../features/comment/CommentSlice";
-import FriendReducer from "../features/friend/FriendSlice";
-import PostReducer from "../features/post/PostSlice";
-import UserReducer from "../features/user/UserSlice";
+import CommentReducer from "../features/comment/commentSlice";
+import FriendReducer from "../features/friend/friendSlice";
+import PostReducer from "../features/post/postSlice";
+import UserReducer from "../features/user/userSlice";
 
 const { configureStore } = require("@reduxjs/toolkit");
 
