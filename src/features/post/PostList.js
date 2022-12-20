@@ -9,7 +9,10 @@ import { Typography } from "@mui/material";
 function PostList({ userId }) {
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();
-  const { posts, totalPosts, isLoading } = useSelector((state) => state.post);
+  const { currentPagePosts, postsById, totalPosts, isLoading } = useSelector(
+    (state) => state.post
+  );
+  const posts = currentPagePosts.map((postId) => postsById[postId]);
   useEffect(() => {
     if (userId) dispatch(getPosts({ userId, page }));
   }, [userId, page, dispatch]);

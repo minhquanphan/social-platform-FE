@@ -4,7 +4,8 @@ import apiService from "../../app/apiService";
 const initialState = {
   isLoading: false,
   error: null,
-  posts: [],
+  postsById: {},
+  currentPagePosts: [],
 };
 
 const slice = createSlice({
@@ -22,13 +23,22 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
       const newPost = action.payload;
-      state.posts.unshift(newPost);
+      if (state.currentPagePosts % 2 === 0) {
+        state.currentPagePosts.pop(newPost._id);
+      }
+      state.postsById[newPost._id] = newPost;
+      state.currentPagePosts.unshift(newPost._id);
     },
     getPostSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
       const { count, posts } = action.payload;
-      state.posts = posts;
+      posts.forEach((post) => {
+        state.postsById[post._id] = post;
+        if (!state.currentPagePosts.includes(post._id)) {
+          state.currentPagePosts.push(post._id);
+        }
+      });
       state.totalPosts = count;
     },
   },
