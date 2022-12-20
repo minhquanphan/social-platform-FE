@@ -18,7 +18,7 @@ function PostList({ userId }) {
   }, [userId, page, dispatch]);
 
   return (
-    <div>
+    <>
       {" "}
       {posts.map((post) => (
         <PostCard key={post._id} post={post} />
@@ -38,7 +38,7 @@ function PostList({ userId }) {
           <Typography variant="h6">no posts yet</Typography>
         )}
       </Box>
-    </div>
+    </>
   );
 }
 
