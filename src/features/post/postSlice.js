@@ -21,11 +21,15 @@ const slice = createSlice({
     createPostSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
+      const newPost = action.payload;
+      state.posts.unshift(newPost);
     },
     getPostSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-      state.posts = action.payload.posts;
+      const { count, posts } = action.payload;
+      state.posts = posts;
+      state.totalPosts = count;
     },
   },
 });
