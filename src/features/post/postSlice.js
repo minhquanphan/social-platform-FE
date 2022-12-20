@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import apiService from "../../app/apiService";
+import { POST_PER_PAGE } from "../../app/config";
 
 const initialState = {
   isLoading: false,
@@ -23,7 +24,7 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
       const newPost = action.payload;
-      if (state.currentPagePosts % 2 === 0) {
+      if (state.currentPagePosts % POST_PER_PAGE === 0) {
         state.currentPagePosts.pop(newPost._id);
       }
       state.postsById[newPost._id] = newPost;
@@ -57,7 +58,7 @@ export const createPost =
   };
 
 export const getPosts =
-  ({ userId, page, limit = 2 }) =>
+  ({ userId, page, limit = POST_PER_PAGE }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
