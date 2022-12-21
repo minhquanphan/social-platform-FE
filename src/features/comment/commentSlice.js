@@ -1,9 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import apiService from "../../app/apiService";
+import { COMMENT_PER_PAGE } from "../../app/config";
 
 const initialState = {
   isLoading: false,
   error: null,
+  commentsById: {},
+  commentsByPost: {},
+  currentPageByPost: {},
+  totalCommentsByPost: {},
 };
 
 const slice = createSlice({
@@ -21,6 +26,18 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
     },
+    getCommentSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      console.log(action.payload);
+      const { comments, count, page, postId } = action.payload;
+      comments.forEach((comment) => {
+        state.commentsById[comment._id] = comment;
+      });
+      state.commentsByPost[postId] = comments.map((comment) => comment._id);
+      state.currentPageByPost[postId] = page;
+      state.totalCommentsByPost[postId] = count;
+    },
   },
 });
 
@@ -31,9 +48,26 @@ export const createComment =
     try {
       const response = await apiService.post("/comments", { postId, content });
       dispatch(slice.actions.createCommentSuccess(response.data));
+      dispatch(getComments({ postId })); // trigger get comment post and reload
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }
   };
 
+export const getComments =
+  ({ postId, page = 1, limit = COMMENT_PER_PAGE }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const params = { page, limit };
+      const response = await apiService.get(`/posts/${postId}/comments`, {
+        params,
+      });
+      dispatch(
+        slice.actions.getCommentSuccess({ ...response.data, postId, page })
+      );
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+    }
+  };
 export default slice.reducer;
