@@ -3,12 +3,12 @@ import ThumbDownAltRoundedIcon from "@mui/icons-material/ThumbDownAltRounded";
 import ThumbUpRoundedIcon from "@mui/icons-material/ThumbUpRounded";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { sendPostReaction } from "./postSlice";
+import { sendCommentReaction } from "./commentSlice";
 
-function PostReaction({ post }) {
+function CommentReaction({ comment }) {
   const dispatch = useDispatch();
   const handleClick = (emoji) => {
-    dispatch(sendPostReaction({ postId: post._id, emoji }));
+    dispatch(sendCommentReaction({ commentId: comment._id, emoji }));
   };
 
   return (
@@ -17,15 +17,15 @@ function PostReaction({ post }) {
         <ThumbUpRoundedIcon sx={{ fontSize: 20, color: "primary.main" }} />
       </IconButton>
       <Typography variant="h6" mr={1}>
-        {post?.reactions?.like}
+        {comment?.reactions?.like}
       </Typography>
 
       <IconButton onClick={() => handleClick("dislike")}>
         <ThumbDownAltRoundedIcon sx={{ fontSize: 20, color: "error.main" }} />
       </IconButton>
-      <Typography variant="h6">{post?.reactions?.dislike}</Typography>
+      <Typography variant="h6">{comment?.reactions?.dislike}</Typography>
     </Stack>
   );
 }
 
-export default PostReaction;
+export default CommentReaction;
