@@ -42,6 +42,7 @@ function CommentList({ postId }) {
   } else if (isLoading) {
     renderComments = <LoadingScreen />;
   }
+
   useEffect(() => {
     if (postId) dispatch(getComments({ postId }));
   }, [postId, dispatch]);

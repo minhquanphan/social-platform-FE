@@ -76,6 +76,7 @@ export const getComments =
       dispatch(slice.actions.hasError(error.message));
     }
   };
+
 export const sendCommentReaction =
   ({ commentId, emoji }) =>
   async (dispatch) => {

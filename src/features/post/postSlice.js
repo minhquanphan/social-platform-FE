@@ -64,7 +64,7 @@ export const createPost =
   };
 
 export const getPosts =
-  ({ userId, page, limit = POST_PER_PAGE }) =>
+  ({ userId, page = 1, limit = POST_PER_PAGE }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
