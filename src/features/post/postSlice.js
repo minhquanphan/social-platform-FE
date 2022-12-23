@@ -39,7 +39,7 @@ const slice = createSlice({
         if (!state.currentPagePosts.includes(post._id)) {
           state.currentPagePosts.push(post._id);
         }
-      });
+      }); //fixing duplicated id when loading more pagination
       state.totalPosts = count;
     },
     sendPostReactionSuccess(state, action) {
