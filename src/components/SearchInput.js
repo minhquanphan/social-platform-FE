@@ -6,8 +6,8 @@ import SearchIcon from "@mui/icons-material/Search";
 function SearchInput({ handleSubmit }) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (event) => {
+    event.preventDefault();
     handleSubmit(searchQuery);
   };
 
