@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import apiService from "../../app/apiService";
 
 const initialState = {
@@ -77,6 +78,7 @@ export const getUsers =
       dispatch(slice.actions.getUsersSuccess(respone.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
     }
   };
 
@@ -89,8 +91,10 @@ export const sendFriendRequest = (targetUserId) => async (dispatch) => {
     dispatch(
       slice.actions.sendRequestSuccess({ ...respone.data, targetUserId })
     );
+    toast.success("Request send");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 
@@ -103,8 +107,10 @@ export const acceptRequest = (targetUserId) => async (dispatch) => {
     dispatch(
       slice.actions.acceptRequestSuccess({ ...respone.data, targetUserId })
     );
+    toast.success("Request accepted");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 
@@ -117,8 +123,10 @@ export const declineRequest = (targetUserId) => async (dispatch) => {
     dispatch(
       slice.actions.declineRequestSuccess({ ...respone.data, targetUserId })
     );
+    toast.success("Request declined");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 
@@ -132,8 +140,10 @@ export const cancelRequest = (targetUserId) => async (dispatch) => {
     dispatch(
       slice.actions.cancelRequestSuccess({ ...respone.data, targetUserId })
     );
+    toast.success("Request cancelled");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 
@@ -144,8 +154,10 @@ export const unfriendAction = (targetUserId) => async (dispatch) => {
     dispatch(
       slice.actions.deleteRequestSuccess({ ...respone.data, targetUserId })
     );
+    toast.success("Friend removed");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
   }
 };
 export default slice.reducer;
