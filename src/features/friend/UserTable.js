@@ -12,10 +12,24 @@ import {
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import FriendStatus from "./FriendStatus";
+import ActionButton from "./ActionButton";
 
 function UserTable({ users }) {
   const { user } = useAuth();
-  const currentUserId = user._id;
+  // const currentUserId = user._id;
+
+  const getActionAndStatus = (targetUser) => {
+    const props = {
+      currentUserId: user._id,
+      targetUserId: targetUser._id,
+      friendship: targetUser.friendship,
+    };
+    return {
+      status: <FriendStatus {...props} />,
+      action: <ActionButton {...props} />,
+    };
+  };
 
   return (
     <Box sx={{ overflowX: "auto" }}>
@@ -46,7 +60,7 @@ function UserTable({ users }) {
           </TableHead>
           <TableBody>
             {users.map((user) => {
-              const { status, action } = {};
+              const { status, action } = getActionAndStatus(user);
               return (
                 <TableRow key={user._id} hover>
                   <TableCell

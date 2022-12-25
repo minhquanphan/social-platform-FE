@@ -31,6 +31,36 @@ const slice = createSlice({
       state.totalPages = totalPages;
       state.totalUsers = count;
     },
+    sendRequestSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { targetUserId, ...friendship } = action.payload;
+      state.usersById[targetUserId].friendship = friendship;
+    },
+    acceptRequestSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { targetUserId, ...friendship } = action.payload;
+      state.usersById[targetUserId].friendship = friendship;
+    },
+    declineRequestSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { targetUserId, ...friendship } = action.payload;
+      state.usersById[targetUserId].friendship = friendship;
+    },
+    cancelRequestSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { targetUserId } = action.payload;
+      state.usersById[targetUserId].friendship = null;
+    },
+    unfriendSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { targetUserId } = action.payload;
+      state.usersById[targetUserId].friendship = null;
+    },
   },
 });
 
@@ -50,4 +80,72 @@ export const getUsers =
     }
   };
 
+export const sendFriendRequest = (targetUserId) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const respone = await apiService.post("/friends/requests", {
+      to: targetUserId,
+    });
+    dispatch(
+      slice.actions.sendRequestSuccess({ ...respone.data, targetUserId })
+    );
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+  }
+};
+
+export const acceptRequest = (targetUserId) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const respone = await apiService.put(`/friends/requests/${targetUserId}`, {
+      status: "accepted",
+    });
+    dispatch(
+      slice.actions.acceptRequestSuccess({ ...respone.data, targetUserId })
+    );
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+  }
+};
+
+export const declineRequest = (targetUserId) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const respone = await apiService.put(`/friends/requests/${targetUserId}`, {
+      status: "declined",
+    });
+    dispatch(
+      slice.actions.declineRequestSuccess({ ...respone.data, targetUserId })
+    );
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+  }
+};
+
+export const cancelRequest = (targetUserId) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const respone = await apiService.delete(
+      `/friends/requests/${targetUserId}`,
+      {}
+    );
+    dispatch(
+      slice.actions.cancelRequestSuccess({ ...respone.data, targetUserId })
+    );
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+  }
+};
+
+export const unfriendAction = (targetUserId) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const respone = await apiService.delete(`/friends/${targetUserId}`, {});
+    dispatch(
+      slice.actions.deleteRequestSuccess({ ...respone.data, targetUserId })
+    );
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+  }
+};
 export default slice.reducer;
