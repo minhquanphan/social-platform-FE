@@ -33,7 +33,7 @@ function FriendRequest() {
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 3 }}>
-        Friend List
+        Friend Requests
       </Typography>
       <Card sx={{ p: 3 }}>
         <Stack spacing={2}>
@@ -45,10 +45,10 @@ function FriendRequest() {
               sx={{ color: "text.secondary", ml: 1 }}
             >
               {totalUsers > 1
-                ? `${totalUsers} users found`
+                ? `${totalUsers} requests found`
                 : totalUsers === 1
-                ? `${totalUsers} user found`
-                : "No user found"}
+                ? `${totalUsers} request found`
+                : "No request found"}
             </Typography>
 
             <Pagination

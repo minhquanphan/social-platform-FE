@@ -42,7 +42,7 @@ function FriendList() {
 
             <Typography
               variant="subtitle"
-              sx={{ color: "text.secondary", ml: 1 }}
+              sx={{ color: "text.secondary", ml: 2 }}
             >
               {totalUsers > 1
                 ? `${totalUsers} users found`
