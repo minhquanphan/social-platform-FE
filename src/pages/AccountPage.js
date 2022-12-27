@@ -1,18 +1,14 @@
-import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 import React, { useState } from "react";
-import AccountGeneral from "../features/user/AccountGeneral";
-import AccountSocialLink from "../features/user/AccountSocialLink";
+import { Container, Tab, Box, Tabs, Typography } from "@mui/material";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ShareIcon from "@mui/icons-material/Share";
+import AccountGeneral from "../features/user/AccountGeneral";
+
 import { capitalCase } from "change-case";
+import AccountSocialLink from "../features/user/AccountSocialLink";
 
 function AccountPage() {
   const [currentTab, setCurrentTab] = useState("general");
-
-  const handleChangeTab = (newValue) => {
-    setCurrentTab(newValue);
-  };
-
   const ACCOUNT_TABS = [
     {
       value: "general",
@@ -25,25 +21,25 @@ function AccountPage() {
       component: <AccountSocialLink />,
     },
   ];
-
   return (
     <Container>
-      <Typography>Account Page</Typography>
-
+      <Typography variant="h5" gutterBottom>
+        Account Settings
+      </Typography>
       <Tabs
         value={currentTab}
-        onChange={(e, value) => handleChangeTab(value)}
-        variant="scrollable"
         scrollButtons="auto"
+        variant="scrollable"
         allowScrollButtonsMobile
+        onChange={(e, value) => setCurrentTab(value)}
       >
         {ACCOUNT_TABS.map((tab) => (
           <Tab
             disableRipple
             key={tab.value}
-            value={tab.value}
-            icon={tab.icon}
             label={capitalCase(tab.value)}
+            icon={tab.icon}
+            value={tab.value}
           />
         ))}
       </Tabs>
@@ -51,8 +47,8 @@ function AccountPage() {
       <Box sx={{ mb: 5 }} />
 
       {ACCOUNT_TABS.map((tab) => {
-        const isMatch = tab.value === currentTab;
-        return isMatch && <Box key={tab.value}>{tab.component}</Box>;
+        const isMatched = tab.value === currentTab;
+        return isMatched && <Box key={tab.value}>{tab.component}</Box>;
       })}
     </Container>
   );

@@ -45,11 +45,38 @@ export const getUserProfile = (id) => async (dispatch) => {
 };
 
 export const updateUserProfile =
-  ({ id, facebookLink, instagramLink, linkedinLink, twitterLink }) =>
+  ({
+    id,
+    name,
+    avatarUrl,
+    coverUrl,
+    aboutMe,
+    city,
+    country,
+    company,
+    jobTitle,
+    facebookLink,
+    instagramLink,
+    linkedinLink,
+    twitterLink,
+  }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const data = { facebookLink, instagramLink, linkedinLink, twitterLink };
+      const data = {
+        name,
+        avatarUrl,
+        coverUrl,
+        aboutMe,
+        city,
+        country,
+        company,
+        jobTitle,
+        facebookLink,
+        instagramLink,
+        linkedinLink,
+        twitterLink,
+      };
       const response = await apiService.put(`/users/${id}`, data);
       dispatch(slice.actions.updateUserProfileSuccess(response.data));
       toast.success("Update Profile Successfully");
