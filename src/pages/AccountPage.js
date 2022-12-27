@@ -48,6 +48,8 @@ function AccountPage() {
         ))}
       </Tabs>
 
+      <Box sx={{ mb: 5 }} />
+
       {ACCOUNT_TABS.map((tab) => {
         const isMatch = tab.value === currentTab;
         return isMatch && <Box key={tab.value}>{tab.component}</Box>;
