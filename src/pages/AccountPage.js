@@ -2,13 +2,11 @@ import { Box, Container, Tab, Tabs, Typography } from "@mui/material";
 import React, { useState } from "react";
 import AccountGeneral from "../features/user/AccountGeneral";
 import AccountSocialLink from "../features/user/AccountSocialLink";
-import useAuth from "../hooks/useAuth";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ShareIcon from "@mui/icons-material/Share";
 import { capitalCase } from "change-case";
 
 function AccountPage() {
-  const { user } = useAuth();
   const [currentTab, setCurrentTab] = useState("general");
 
   const handleChangeTab = (newValue) => {
@@ -27,9 +25,11 @@ function AccountPage() {
       component: <AccountSocialLink />,
     },
   ];
+
   return (
     <Container>
       <Typography>Account Page</Typography>
+
       <Tabs
         value={currentTab}
         onChange={(e, value) => handleChangeTab(value)}
@@ -47,6 +47,7 @@ function AccountPage() {
           />
         ))}
       </Tabs>
+
       {ACCOUNT_TABS.map((tab) => {
         const isMatch = tab.value === currentTab;
         return isMatch && <Box key={tab.value}>{tab.component}</Box>;
