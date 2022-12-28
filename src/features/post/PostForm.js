@@ -1,27 +1,28 @@
-import React, { useRef } from "react";
+import React, { useCallback } from "react";
 import { Box, Card, alpha, Stack } from "@mui/material";
 
-import { FormProvider, FTextField } from "../../components/form";
+import { FormProvider, FTextField, FUploadImage } from "../../components/form";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { LoadingButton } from "@mui/lab";
 import { createPost } from "./postSlice";
+import { LoadingButton } from "@mui/lab";
 
-const PostSchema = Yup.object().shape({
+const yupSchema = Yup.object().shape({
   content: Yup.string().required("Content is required"),
 });
 
 const defaultValues = {
   content: "",
-  image: "",
+  image: null,
 };
 
 function PostForm() {
   const { isLoading } = useSelector((state) => state.post);
+
   const methods = useForm({
-    resolver: yupResolver(PostSchema),
+    resolver: yupResolver(yupSchema),
     defaultValues,
   });
   const {
@@ -30,19 +31,28 @@ function PostForm() {
     setValue,
     formState: { isSubmitting },
   } = methods;
-
   const dispatch = useDispatch();
-  const onSubmit = async (data) => {
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+
+      if (file) {
+        setValue(
+          "image",
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        );
+      }
+    },
+    [setValue]
+  );
+
+  const onSubmit = (data) => {
     dispatch(createPost(data)).then(() => reset());
   };
 
-  const fileInput = useRef();
-  const handleFile = (e) => {
-    const file = fileInput.current.files[0];
-    if (file) {
-      setValue("image", file);
-    }
-  };
   return (
     <Card sx={{ p: 3 }}>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -61,15 +71,18 @@ function PostForm() {
             }}
           />
 
-          {/* <FTextField name="Image" placeholder="Image" /> */}
-
-          <input type="file" ref={fileInput} onChange={handleFile} />
+          <FUploadImage
+            name="image"
+            accept="image/*"
+            maxSize={3145728}
+            onDrop={handleDrop}
+          />
 
           <Box
             sx={{
               display: "flex",
+              alignItems: "center",
               justifyContent: "flex-end",
-              allignItem: "center",
             }}
           >
             <LoadingButton
