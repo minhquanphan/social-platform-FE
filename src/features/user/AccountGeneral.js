@@ -1,11 +1,13 @@
-import React from "react";
-import { Box, Grid, Card, Stack } from "@mui/material";
+import React, { useCallback } from "react";
+import { Box, Grid, Card, Stack, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import useAuth from "../../hooks/useAuth";
+
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, FTextField } from "../../components/form";
+import { FormProvider, FTextField, FUploadAvatar } from "../../components/form";
+import { fData } from "../../utils/numberFormat";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile } from "./userSlice";
 
@@ -16,6 +18,7 @@ const UpdateUserSchema = yup.object().shape({
 function AccountGeneral() {
   const { user } = useAuth();
   const isLoading = useSelector((state) => state.user.isLoading);
+
   const defaultValues = {
     name: user?.name || "",
     email: user?.email || "",
@@ -35,11 +38,30 @@ function AccountGeneral() {
     defaultValues,
   });
   const {
+    setValue,
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+
   const dispatch = useDispatch();
-  const onSubmit = async (data) => {
+
+  const handleDrop = useCallback(
+    (acceptedFiles) => {
+      const file = acceptedFiles[0];
+
+      if (file) {
+        setValue(
+          "avatarUrl",
+          Object.assign(file, {
+            preview: URL.createObjectURL(file),
+          })
+        );
+      }
+    },
+    [setValue]
+  );
+
+  const onSubmit = (data) => {
     dispatch(updateUserProfile({ userId: user._id, ...data }));
   };
 
@@ -47,7 +69,29 @@ function AccountGeneral() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ py: 10, px: 3, textAlign: "center" }}>Avatar update</Card>
+          <Card sx={{ py: 10, px: 3, textAlign: "center" }}>
+            <FUploadAvatar
+              name="avatarUrl"
+              accept="image/*"
+              maxSize={3145728}
+              onDrop={handleDrop}
+              helperText={
+                <Typography
+                  variant="caption"
+                  sx={{
+                    mt: 2,
+                    mx: "auto",
+                    display: "block",
+                    textAlign: "center",
+                    color: "text.secondary",
+                  }}
+                >
+                  Allowed *.jpeg, *.jpg, *.png, *.gif
+                  <br /> max size of {fData(3145728)}
+                </Typography>
+              }
+            />
+          </Card>
         </Grid>
 
         <Grid item xs={12} md={8}>
@@ -75,9 +119,10 @@ function AccountGeneral() {
               <FTextField name="city" label="City" />
               <FTextField name="country" label="Country" />
             </Box>
-            <Stack spacing={3} sx={{ mt: 3 }} alignItems="flex-end">
+
+            <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
               <FTextField name="coverUrl" label="Home Profile Cover Image" />
-              <FTextField name="aboutMe" multiline rows={5} label="About Me" />
+              <FTextField name="aboutMe" multiline rows={4} label="About Me" />
 
               <LoadingButton
                 type="submit"
