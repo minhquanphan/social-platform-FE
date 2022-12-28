@@ -29,7 +29,6 @@ const slice = createSlice({
     getCommentSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-      console.log(action.payload);
       const { comments, count, page, postId } = action.payload;
       comments.forEach((comment) => {
         state.commentsById[comment._id] = comment;
