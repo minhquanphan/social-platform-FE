@@ -63,7 +63,7 @@ function UploadSingleFile({ error = false, file, helperText, sx, ...other }) {
             sx={{ color: "#637381" }}
             textAlign="center"
           >
-            Drop or Select Image
+            Drop or Select An Image
           </Typography>
         </Stack>
 
