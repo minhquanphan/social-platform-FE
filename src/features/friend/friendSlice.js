@@ -206,9 +206,7 @@ export const unfriendAction = (targetUserId) => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
     const respone = await apiService.delete(`/friends/${targetUserId}`, {});
-    dispatch(
-      slice.actions.deleteRequestSuccess({ ...respone.data, targetUserId })
-    );
+    dispatch(slice.actions.unfriendSuccess({ ...respone.data, targetUserId }));
     toast.success("Friend removed");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));
