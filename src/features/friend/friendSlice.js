@@ -103,6 +103,7 @@ export const getUsers =
       toast.error(error.message);
     }
   };
+
 export const getFriends =
   ({ filterName, page = 1, limit }) =>
   async (dispatch) => {
