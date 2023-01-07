@@ -7,34 +7,35 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { LoadingButton } from "@mui/lab";
-import { createPost } from "./postSlice";
+import { editPost } from "./postSlice";
+import useAuth from "../../hooks/useAuth";
 
 const PostSchema = Yup.object().shape({
   content: Yup.string().required("Content is required"),
 });
 
-const defaultValues = {
-  content: "",
-  image: "",
-};
-
-function PostForm() {
+function PostEditForm({ post }) {
   const { isLoading } = useSelector((state) => state.post);
+  const { user } = useAuth();
+  const userId = user._id;
+
+  const defaultValues = {
+    content: post?.content || "",
+    image: post?.image || "",
+  };
+
   const methods = useForm({
     resolver: yupResolver(PostSchema),
     defaultValues,
   });
+
   const {
     handleSubmit,
-    reset,
     setValue,
     formState: { isSubmitting },
   } = methods;
 
   const dispatch = useDispatch();
-  const onSubmit = async (data) => {
-    dispatch(createPost(data)).then(() => reset());
-  };
 
   const fileInput = useRef();
   const handleFile = (e) => {
@@ -43,6 +44,13 @@ function PostForm() {
       setValue("image", file);
     }
   };
+
+  const onSubmit = (data) => {
+    if (post.author._id === user._id) {
+      dispatch(editPost({ id: post._id, ...data, userId }));
+    } else alert("you not is author post!");
+  };
+
   return (
     <Card sx={{ p: 3 }}>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -77,8 +85,9 @@ function PostForm() {
               variant="contained"
               size="small"
               loading={isSubmitting || isLoading}
+              onClick={handleSubmit(onSubmit)}
             >
-              Post
+              Save
             </LoadingButton>
           </Box>
         </Stack>
@@ -87,4 +96,4 @@ function PostForm() {
   );
 }
 
-export default PostForm;
+export default PostEditForm;

@@ -9,6 +9,7 @@ const initialState = {
   error: null,
   postsById: {},
   currentPagePosts: [],
+  updatedPost: null,
 };
 
 const slice = createSlice({
@@ -50,9 +51,22 @@ const slice = createSlice({
       const { reactions, postId } = action.payload;
       state.postsById[postId].reactions = reactions;
     },
-    resetPosts(state, action) {
+    resetPosts(state) {
       state.postsById = {};
       state.currentPagePosts = [];
+    },
+    editPostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.updatedPost = action.payload;
+    },
+    deletePostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.currentPagePosts.splice(
+        state.currentPagePosts.indexOf(action.payload._id),
+        1
+      );
     },
   },
 });
@@ -75,6 +89,7 @@ export const createPost =
       toast.error(error.message);
     }
   };
+
 export const getPosts =
   ({ userId, page, limit = POST_PER_PAGE }) =>
   async (dispatch) => {
@@ -111,5 +126,40 @@ export const sendPostReaction =
       dispatch(slice.actions.hasError(error.message));
     }
   };
+
+export const editPost =
+  ({ id, content, image, userId }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const data = { content, image };
+
+      if (image instanceof File) {
+        const imageUrl = await cloudinaryUpload(image);
+        data.image = imageUrl;
+      }
+
+      const response = await apiService.put(`/posts/${id}`, data);
+      console.log(response);
+      dispatch(slice.actions.editPostSuccess(response.data));
+      dispatch(getPosts({ userId }));
+      toast.success("Edit successfully");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
+    }
+  };
+
+export const deletePost = (id) => async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const response = await apiService.delete(`/posts/${id}`);
+    toast.success("Post delete");
+    dispatch(slice.actions.deletePostSuccess(response.data));
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
+  }
+};
 
 export default slice.reducer;
